@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanzas Personales</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F7F6F3;
+  --surface: #FFFFFF;
+  --surface2: #F0EFEb;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --text: #1A1A18;
+  --muted: #888880;
+  --green: #2D6A4F;
+  --green-bg: #EAF4EE;
+  --green-border: #B7DFC8;
+  --red: #9B2335;
+  --red-bg: #FAEAEA;
+  --red-border: #F0BCBC;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+  padding: 32px 24px;
+  line-height: 1.5;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.header-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.header-date {
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.header-date strong { font-weight: 500; }
+
+/* SUMMARY */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.scard {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.scard-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--green); }
+.dot-red { background: var(--red); }
+.dot-gray { background: #BCBCB4; }
+.scard-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.scard-value.green { color: var(--green); }
+.scard-value.red { color: var(--red); }
+.scard-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 300;
+}
+
+/* ACTIONS */
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+.abtn {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform 0.1s, opacity 0.15s;
+  border: 0.5px solid transparent;
+  letter-spacing: 0.01em;
+}
+.abtn:hover { opacity: 0.88; }
+.abtn:active { transform: scale(0.98); }
+.abtn-left { display: flex; align-items: center; gap: 8px; }
+.abtn-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 400;
+  opacity: 0.55;
+}
+.abtn-ing {
+  background: var(--green-bg);
+  border-color: var(--green-border);
+  color: var(--green);
+}
+.abtn-ing .abtn-key { background: rgba(45,106,79,0.12); }
+.abtn-gas {
+  background: var(--red-bg);
+  border-color: var(--red-border);
+  color: var(--red);
+}
+.abtn-gas .abtn-key { background: rgba(155,35,53,0.1); }
+
+.hint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+kbd {
+  background: var(--surface);
+  border: 0.5px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--text);
+}
+
+/* FORM */
+.form-wrap {
+  background: var(--surface);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  display: none;
+  animation: slideDown 0.18s ease;
+}
+.form-wrap.open { display: block; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.form-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+.badge-ing { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+.badge-gas { background: var(--red-bg); color: var(--red); border: 0.5px solid var(--red-border); }
+
+.form-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 20px; line-height: 1;
+  padding: 2px 6px; border-radius: 4px;
+}
+.form-close:hover { background: var(--surface2); color: var(--text); }
+
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.field-full { grid-column: 1 / -1; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 5px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field select:focus {
+  border-color: rgba(0,0,0,0.3);
+  background: var(--surface);
+}
+.field input[type="number"] { font-family: 'DM Mono', monospace; }
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.form-hint { font-size: 11px; color: var(--muted); font-weight: 300; }
+.form-btns { display: flex; gap: 8px; }
+.btn-cancel {
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border-strong);
+  background: transparent; font-size: 13px;
+  color: var(--muted); cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.12s;
+}
+.btn-cancel:hover { background: var(--surface2); }
+.btn-save {
+  padding: 8px 18px; border-radius: var(--radius-sm);
+  border: none; font-size: 13px; font-weight: 500;
+  color: white; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.12s;
+}
+.btn-save:hover { opacity: 0.88; }
+
+/* LIST */
+.list-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.list-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.list-count { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+/* FILTERS */
+.filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.ftag {
+  padding: 5px 12px; border-radius: 20px; font-size: 12px;
+  cursor: pointer; border: 0.5px solid var(--border-strong);
+  background: var(--surface); color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-weight: 400;
+  transition: all 0.12s;
+}
+.ftag:hover { color: var(--text); border-color: rgba(0,0,0,0.2); }
+.ftag.active {
+  background: var(--text); border-color: var(--text);
+  color: white; font-weight: 500;
+}
+
+/* TRANSACTIONS */
+.txn-list { display: flex; flex-direction: column; gap: 5px; }
+.txn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  border: 0.5px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.1s;
+}
+.txn:hover { border-color: var(--border-strong); }
+.txn-bar { width: 3px; height: 30px; border-radius: 2px; flex-shrink: 0; }
+.bar-green { background: var(--green); }
+.bar-red { background: var(--red); }
+
+.txn-body { flex: 1; min-width: 0; }
+.txn-desc {
+  font-size: 13px; font-weight: 400; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.txn-meta { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 300; }
+
+.txn-right { text-align: right; flex-shrink: 0; }
+.txn-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+}
+.txn-date { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 300; }
+
+.txn-del {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 16px; line-height: 1;
+  padding: 4px; border-radius: 4px; opacity: 0;
+  transition: opacity 0.12s;
+}
+.txn:hover .txn-del { opacity: 1; }
+.txn-del:hover { color: var(--red); background: var(--red-bg); }
+
+.empty {
+  padding: 40px 20px; text-align: center;
+  color: var(--muted); font-size: 13px; font-weight: 300; line-height: 1.8;
+}
+.empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.4; }
+
+/* DIVIDER */
+.divider { height: 0.5px; background: var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Finanzas personales</div>
+    <div class="header-date" id="fecha-hoy"></div>
+  </div>
+</div>
+
+<div class="summary">
+  <div class="scard">
+    <div class="scard-label"><span class="dot dot-green"></span> Ingresos</div>
+    <div class="scard-value green" id="s-ing">$0</div>
+    <div class="scard-sub" id="s-ing-c">0 movimientos</div>
+  </div>
+  <div class="scard">
+    <div class="scard-label"><span class="dot dot-red"></span> Gastos</div>
+    <div class="scard-value red" id="s-gas">$0</div>
+    <div class="scard-sub" id="s-gas-c">0 movimientos</div>
+  </div>
+  <div class="scard">
+    <div class="scard-label"><span class="dot dot-gray"></span> Balance</div>
+    <div class="scard-value" id="s-bal">$0</div>
+    <div class="scard-sub" id="s-bal-s">—</div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="abtn abtn-ing" onclick="openForm('Ingreso')">
+    <div class="abtn-left">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Añadir ingreso
+    </div>
+    <span class="abtn-key">I</span>
+  </button>
+  <button class="abtn abtn-gas" onclick="openForm('Gasto')">
+    <div class="abtn-left">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Añadir gasto
+    </div>
+    <span class="abtn-key">G</span>
+  </button>
+</div>
+
+<p class="hint"><kbd>I</kbd> ingreso &nbsp;·&nbsp; <kbd>G</kbd> gasto &nbsp;·&nbsp; <kbd>Enter</kbd> guardar &nbsp;·&nbsp; <kbd>Esc</kbd> cerrar</p>
+
+<div class="form-wrap" id="form-wrap">
+  <div class="form-top">
+    <span class="form-badge" id="form-badge">Ingreso</span>
+    <button class="form-close" onclick="closeForm()">×</button>
+  </div>
+  <div class="fields">
+    <div class="field field-full">
+      <label>Descripción</label>
+      <input type="text" id="f-desc" placeholder="Ej: Salario, Mercado, Netflix…">
+    </div>
+    <div class="field">
+      <label>Monto ($)</label>
+      <input type="number" id="f-amount" placeholder="0" min="0" step="1000">
+    </div>
+    <div class="field">
+      <label>Categoría</label>
+      <select id="f-cat">
+        <option>Trabajo</option>
+        <option>Vivienda</option>
+        <option>Alimentación</option>
+        <option>Transporte</option>
+        <option>Entretenimiento</option>
+        <option>Salud</option>
+        <option>Educación</option>
+        <option>Otros</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Fecha</label>
+      <input type="date" id="f-date">
+    </div>
+    <div class="field field-full">
+      <label>Nota (opcional)</label>
+      <input type="text" id="f-note" placeholder="Añade un detalle…">
+    </div>
+  </div>
+  <div class="form-footer">
+    <span class="form-hint"><kbd>Enter</kbd> para guardar</span>
+    <div class="form-btns">
+      <button class="btn-cancel" onclick="closeForm()">Cancelar</button>
+      <button class="btn-save" id="btn-save" onclick="save()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="list-top">
+  <span class="list-label">Movimientos</span>
+  <span class="list-count" id="list-count">—</span>
+</div>
+
+<div class="filters">
+  <button class="ftag active" onclick="setFilter('todos',this)">Todos</button>
+  <button class="ftag" onclick="setFilter('Ingreso',this)">Ingresos</button>
+  <button class="ftag" onclick="setFilter('Gasto',this)">Gastos</button>
+  <button class="ftag" onclick="setFilter('Trabajo',this)">Trabajo</button>
+  <button class="ftag" onclick="setFilter('Alimentación',this)">Alimentación</button>
+  <button class="ftag" onclick="setFilter('Vivienda',this)">Vivienda</button>
+  <button class="ftag" onclick="setFilter('Transporte',this)">Transporte</button>
+  <button class="ftag" onclick="setFilter('Entretenimiento',this)">Ocio</button>
+</div>
+
+<div class="txn-list" id="list"></div>
+
+<script>
+  let txns = [];
+  let currentType = 'Ingreso';
+  let activeFilter = 'todos';
+
+  // Fecha encabezado
+  const now = new Date();
+  const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('fecha-hoy').innerHTML = `${dias[now.getDay()]}, <strong>${now.getDate()} de ${meses[now.getMonth()]}</strong>`;
+
+  const fmt = n => '$' + Math.round(n).toLocaleString('es-CO');
+  const today = () => new Date().toISOString().split('T')[0];
+  const plural = (n, w) => n + ' ' + w + (n !== 1 ? 's' : '');
+
+  function openForm(type) {
+    currentType = type;
+    const isIng = type === 'Ingreso';
+    document.getElementById('form-badge').textContent = type;
+    document.getElementById('form-badge').className = 'form-badge ' + (isIng ? 'badge-ing' : 'badge-gas');
+    document.getElementById('btn-save').style.background = isIng ? 'var(--green)' : 'var(--red)';
+    document.getElementById('f-cat').value = isIng ? 'Trabajo' : 'Alimentación';
+    document.getElementById('f-date').value = today();
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-amount').value = '';
+    document.getElementById('f-note').value = '';
+    document.getElementById('form-wrap').classList.add('open');
+    setTimeout(() => document.getElementById('f-desc').focus(), 30);
+  }
+
+  function closeForm() {
+    document.getElementById('form-wrap').classList.remove('open');
+  }
+
+  function save() {
+    const desc = document.getElementById('f-desc').value.trim();
+    const amount = parseFloat(document.getElementById('f-amount').value);
+    const cat = document.getElementById('f-cat').value;
+    const date = document.getElementById('f-date').value;
+    const note = document.getElementById('f-note').value.trim();
+    if (!desc || isNaN(amount) || amount <= 0) {
+      document.getElementById(!desc ? 'f-desc' : 'f-amount').focus();
+      return;
+    }
+    txns.unshift({ id: Date.now(), type: currentType, desc, amount, cat, date, note });
+    closeForm();
+    render();
+  }
+
+  function del(id) {
+    txns = txns.filter(t => t.id !== id);
+    render();
+  }
+
+  function setFilter(f, el) {
+    activeFilter = f;
+    document.querySelectorAll('.ftag').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    render();
+  }
+
+  function render() {
+    const ing = txns.filter(t => t.type === 'Ingreso');
+    const gas = txns.filter(t => t.type === 'Gasto');
+    const totalIng = ing.reduce((a,b) => a+b.amount, 0);
+    const totalGas = gas.reduce((a,b) => a+b.amount, 0);
+    const bal = totalIng - totalGas;
+
+    document.getElementById('s-ing').textContent = fmt(totalIng);
+    document.getElementById('s-ing-c').textContent = plural(ing.length, 'movimiento');
+    document.getElementById('s-gas').textContent = fmt(totalGas);
+    document.getElementById('s-gas-c').textContent = plural(gas.length, 'movimiento');
+
+    const balEl = document.getElementById('s-bal');
+    balEl.textContent = fmt(bal);
+    balEl.className = 'scard-value' + (bal > 0 ? ' green' : bal < 0 ? ' red' : '');
+    document.getElementById('s-bal-s').textContent = bal > 0 ? 'estás en positivo' : bal < 0 ? 'estás en negativo' : '—';
+
+    const visible = activeFilter === 'todos' ? txns : txns.filter(t => t.type === activeFilter || t.cat === activeFilter);
+    document.getElementById('list-count').textContent = plural(visible.length, 'registro');
+
+    const list = document.getElementById('list');
+    if (!visible.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">◦</div>Sin movimientos aún.<br>Usa <kbd>I</kbd> para un ingreso o <kbd>G</kbd> para un gasto.</div>`;
+      return;
+    }
+    list.innerHTML = visible.map(t => `
+      <div class="txn">
+        <div class="txn-bar ${t.type === 'Ingreso' ? 'bar-green' : 'bar-red'}"></div>
+        <div class="txn-body">
+          <div class="txn-desc">${t.desc}</div>
+          <div class="txn-meta">${t.cat}${t.note ? ' · ' + t.note : ''}</div>
+        </div>
+        <div class="txn-right">
+          <div class="txn-amount" style="color:${t.type==='Ingreso'?'var(--green)':'var(--red)'}">${t.type==='Ingreso'?'+':'−'}${fmt(t.amount)}</div>
+          <div class="txn-date">${t.date}</div>
+        </div>
+        <button class="txn-del" onclick="del(${t.id})" title="Eliminar">×</button>
+      </div>
+    `).join('');
+  }
+
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement.tagName;
+    const inForm = ['INPUT','SELECT','TEXTAREA'].includes(tag);
+    if (inForm) {
+      if (e.key === 'Escape') closeForm();
+      if (e.key === 'Enter') { e.preventDefault(); save(); }
+      return;
+    }
+    if (e.key === 'i' || e.key === 'I') openForm('Ingreso');
+    if (e.key === 'g' || e.key === 'G') openForm('Gasto');
+    if (e.key === 'Escape') closeForm();
+  });
+
+  render();
+</script>
+</body>
+</html>
